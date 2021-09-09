@@ -26,19 +26,20 @@ class RegisterAPI(MethodView):
         if not user:
             try:
                 user = User(
-                    email=post_data.get('email'),
-                    password=post_data.get('password')
+                    email=post_data.get("email"),
+                    password=post_data.get("password")
                 )
-
+                
                 # insert the user
                 db.session.add(user)
                 db.session.commit()
+
                 # generate the auth token
                 auth_token = user.encode_auth_token(user.id)
                 responseObject = {
                     'status': 'success',
                     'message': 'Successfully registered.',
-                    'auth_token': auth_token.decode()
+                    'auth_token': auth_token
                 }
                 return make_response(jsonify(responseObject)), 201
             except Exception as e:
@@ -54,13 +55,37 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 202
 
+class UserAPI(MethodView):
+    def get(self):
+        users = User.query.all()
+        user_list = []
+        for user in users:
+            newUser = {
+                'admin': user.admin,
+                'email': user.email,
+                'id': user.id,
+                'registered_on': user.registered_on
+            }
+            user_list.append(newUser)
+        responseObject = {
+            'users': user_list
+        }
+        return make_response(jsonify(responseObject)), 201
+
 
 # define the API resources
 registration_view = RegisterAPI.as_view('register_api')
+users_view = UserAPI.as_view('user_api')
 
 # add Rules for API Endpoints
 auth_blueprint.add_url_rule(
     '/auth/register',
     view_func=registration_view,
     methods=['POST', 'GET']
+)
+
+auth_blueprint.add_url_rule(
+    '/users/index',
+    view_func=users_view,
+    methods=['GET']
 )
