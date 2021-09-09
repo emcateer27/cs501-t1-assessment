@@ -21,6 +21,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 app = Flask(__name__)
+print(__name__)
 
 app_settings = os.getenv(
     'APP_SETTINGS',
