@@ -1,4 +1,5 @@
 web: gunicorn project.server:app
 heroku ps:scale web=1
-release: python project.server.__init__ db upgrade
-
+release: flask db init 
+release: flask db migrate
+release: flask db upgrade
