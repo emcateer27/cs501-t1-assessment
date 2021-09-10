@@ -1,3 +1,3 @@
 web: gunicorn project.server:app
 heroku ps:scale web=1
-release: heroku run flask db upgrade
+release: python project.server.__init__.py db upgrade
