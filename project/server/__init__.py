@@ -69,3 +69,6 @@ def test(coverage):
             COV.erase()
         return 0
     return 1
+
+def __main__(): 
+    app.run()
